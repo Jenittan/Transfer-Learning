@@ -79,8 +79,8 @@ def train_model(model, train_loader,test_loader,num_epochs=10):
         print(f'Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_losses[-1]:.4f}, Validation Loss: {val_losses[-1]:.4f}')
 
     # Plot training and validation loss
-    print("Name: Stephen raj Y")
-    print("Register Number: 212223230217")
+    print("Name: jenittan jose j b")
+    print("Register Number: 212224240063")
     plt.figure(figsize=(8, 6))
     plt.plot(range(1, num_epochs + 1), train_losses, label='Train Loss', marker='o')
     plt.plot(range(1, num_epochs + 1), val_losses, label='Validation Loss', marker='s')
@@ -91,19 +91,23 @@ def train_model(model, train_loader,test_loader,num_epochs=10):
     plt.show()
 
 
+
 ```
 
 ## OUTPUT
 ### Training Loss, Validation Loss Vs Iteration Plot
-<img width="753" height="780" alt="image" src="https://github.com/user-attachments/assets/d0e5eef9-47b4-4303-be6d-4b680276376d" />
+
+<img width="883" height="633" alt="Screenshot 2025-09-16 112001" src="https://github.com/user-attachments/assets/3ba8509e-c65b-4df0-a819-0257acafd6be" />
 
 
 ### Confusion Matrix
-<img width="684" height="567" alt="image" src="https://github.com/user-attachments/assets/9e6659f5-42c5-493b-97c5-a6409617b5f6" />
+
+<img width="793" height="632" alt="Screenshot 2025-09-16 112012" src="https://github.com/user-attachments/assets/7ce5b088-04d5-4df5-80f9-2fb125d8cb3d" />
 
 
 ### Classification Report
-<img width="493" height="207" alt="image" src="https://github.com/user-attachments/assets/e40e40b9-4776-438f-9b1b-fb7d26eaaa36" />
+<img width="520" height="196" alt="Screenshot 2025-09-16 112021" src="https://github.com/user-attachments/assets/3cd89053-b2cf-43b6-9dd2-f133a6d35885" />
+
 
 
 ### New Sample Prediction
