@@ -2,85 +2,112 @@
 ## Aim
 To Implement Transfer Learning for classification using VGG-19 architecture.
 ## Problem Statement and Dataset
-
-This experiment demonstrates transfer learning using a pre-trained ResNet18 model on a custom image dataset. Instead of training a deep neural network from scratch, the pre-trained model’s feature extraction layers are reused, and only the final classification layer is retrained. This approach reduces training time, requires less data, and achieves high accuracy.
-</br>
-</br>
-</br>
+Develop an image classification model using transfer learning with the pre-trained VGG19 model.
 
 ## DESIGN STEPS
-### STEP 1:Data Preprocessing – Resize all images to 224×224 and convert them into tensors suitable for ResNet input.
+### STEP 1:
+Import required libraries.Then dataset is loaded and define the training and testing dataset.
+### STEP 2:
+initialize the model,loss function,optimizer. CrossEntropyLoss for multi-class classification and Adam optimizer for efficient training.
+### STEP 3:
+Train the model with training dataset.
+### STEP 4:
+Evaluate the model with testing dataset.
+### STEP 5:
+Make Predictions on New Data.
 
-### STEP 2: Dataset Loading – Organize images into train/test sets and load them using ImageFolder and DataLoader.
-
-### STEP 3:Load Pretrained Model – Use ResNet18 trained on ImageNet as the base model.
-
-### STEP 4:Modify Final Layer – Freeze earlier layers and replace the fully connected layer to match the number of dataset classes.
-
-### STEP 5:Train and Evaluate – Train only the final layer, then test the model and analyze results using a confusion matrix and classification report.
-<br/>
 
 ## PROGRAM
 Include your code here
 ```python
 # Load Pretrained Model and Modify for Transfer Learning
 
-model = models.resnet18(pretrained=True)
+model = models.vgg19(weights = models.VGG19_Weights.DEFAULT)
+
+for param in model.parameters():
+  param.requires_grad = False
 
 
 # Modify the final fully connected layer to match the dataset classes
 
-for param in model.parameters():
-    param.requires_grad = False   # freeze earlier layers
-
-model.fc = nn.Linear(model.fc.in_features, num_classes)
+num_features = model.classifier[-1].in_features
+model.classifier[-1] = nn.Linear(num_features,1)
 
 
 # Include the Loss function and optimizer
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
+criterion = nn.BCELoss()
+optimizer = optim.Adam(model.parameters(),lr=0.001)
 
 
 
 # Train the model
-for epoch in range(num_epochs):
-    for images, labels in train_loader:
-        ...
 
+def train_model(model, train_loader,test_loader,num_epochs=10):
+    train_losses = []
+    val_losses = []
+    model.train()
+    for epoch in range(num_epochs):
+        running_loss = 0.0
+        for images, labels in train_loader:
+            images, labels = images.to(device), labels.to(device)
+            optimizer.zero_grad()
+            outputs = model(images)
+            outputs = torch.sigmoid(outputs)
+            labels = labels.float().unsqueeze(1)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            running_loss += loss.item()
+        train_losses.append(running_loss / len(train_loader))
+
+    # Compute validation loss
+        model.eval()
+        val_loss = 0.0
+        with torch.no_grad():
+            for images, labels in test_loader:
+                images, labels = images.to(device), labels.to(device)
+                outputs = model(images)
+                outputs = torch.sigmoid(outputs)
+                labels = labels.float().unsqueeze(1)
+                loss = criterion(outputs, labels)
+                val_loss += loss.item()
+
+        val_losses.append(val_loss / len(test_loader))
+        model.train()
+
+        print(f'Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_losses[-1]:.4f}, Validation Loss: {val_losses[-1]:.4f}')
+
+    # Plot training and validation loss
+    print("Name: Stephen raj Y")
+    print("Register Number: 212223230217")
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(1, num_epochs + 1), train_losses, label='Train Loss', marker='o')
+    plt.plot(range(1, num_epochs + 1), val_losses, label='Validation Loss', marker='s')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.show()
 
 
 ```
 
 ## OUTPUT
 ### Training Loss, Validation Loss Vs Iteration Plot
-<img width="700" height="547" alt="image" src="https://github.com/user-attachments/assets/d1f01bb5-8b3e-45f9-baf6-0b58af6bce99" />
+<img width="753" height="780" alt="image" src="https://github.com/user-attachments/assets/d0e5eef9-47b4-4303-be6d-4b680276376d" />
 
-</br>
-</br>
-</br>
 
 ### Confusion Matrix
-<img width="640" height="547" alt="image" src="https://github.com/user-attachments/assets/471daceb-7b17-48ea-bf8c-7d00826c715f" />
+<img width="684" height="567" alt="image" src="https://github.com/user-attachments/assets/9e6659f5-42c5-493b-97c5-a6409617b5f6" />
 
-</br>
-</br>
-</br>
 
 ### Classification Report
-<img width="593" height="236" alt="image" src="https://github.com/user-attachments/assets/b0d1f67e-f8cf-4b2b-862a-fddeea25ff27" />
+<img width="493" height="207" alt="image" src="https://github.com/user-attachments/assets/e40e40b9-4776-438f-9b1b-fb7d26eaaa36" />
 
-</br>
-</br>
-</br>
 
 ### New Sample Prediction
-<img width="378" height="431" alt="image" src="https://github.com/user-attachments/assets/7ad41571-4952-488a-bcba-7d2539a74a20" />
-
-</br>
-</br>
+<img width="434" height="371" alt="image" src="https://github.com/user-attachments/assets/af9a852f-7174-49d5-ad24-2d6356116cd5" />
 
 ## RESULT
-</br>
-</br>
-</br>
+The VGG-19 model was successfully trained and optimized to classify defected and non-defected capacitors.
